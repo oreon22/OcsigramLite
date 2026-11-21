@@ -26,11 +26,11 @@ class MainActivity : ComponentActivity() {
                 darkTheme = settingsRepository.darkTheme.collectAsStateWithLifecycle(
                     initialValue = false,
                     lifecycle = lifecycle,
-                ).value,
+                ),
                 dynamicColor = settingsRepository.dynamicColors.collectAsStateWithLifecycle(
                     initialValue = true,
                     lifecycle = lifecycle,
-                ).value,
+                ),
             ) {
                 AppNavigation()
             }
