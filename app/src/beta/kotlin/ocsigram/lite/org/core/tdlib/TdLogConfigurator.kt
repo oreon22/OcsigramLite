@@ -15,8 +15,7 @@ class BetaTdLogConfigurator @Inject constructor() : TdLogConfigurator {
             TdApi.SetLogStream(
                 TdApi.LogStreamFile(
                     logDirectory.resolve("tdlib.log").absolutePath,
-                    2 * 1024 * 1024,
-                    5,
+                    2L * 1024 * 1024,
                     true,
                 ),
             ),

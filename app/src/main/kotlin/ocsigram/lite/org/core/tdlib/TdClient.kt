@@ -53,7 +53,7 @@ class TdClient @Inject constructor(
     }
 
     override suspend fun <T : TdApi.Object> send(function: TdApi.Function<T>): T =
-        suspendCancellableCoroutine { continuation ->
+        suspendCancellableCoroutine<T> { continuation ->
             val id = nextRequestId++
             pending[id] = continuation as CancellableContinuation<TdApi.Object>
             val resultHandler = Client.ResultHandler { result ->
@@ -98,7 +98,7 @@ class TdClient @Inject constructor(
     }
 
     private fun sendParameters() {
-        val parameters = TdApi.TdlibParameters().apply {
+        val parameters = TdApi.SetTdlibParameters().apply {
             useTestDc = false
             databaseDirectory = context.filesDir.resolve("tdlib").absolutePath
             filesDirectory = context.filesDir.resolve("tdlib/files").absolutePath
@@ -114,6 +114,6 @@ class TdClient @Inject constructor(
             systemVersion = android.os.Build.VERSION.RELEASE
             applicationVersion = BuildConfig.VERSION_NAME
         }
-        client?.send(TdApi.SetTdlibParameters(parameters), null, null)
+        client?.send(parameters, null, null)
     }
 }

@@ -23,8 +23,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             OcsiGramTheme(
-                darkTheme = settingsRepository.darkTheme.collectAsStateWithLifecycle(),
-                dynamicColor = settingsRepository.dynamicColors.collectAsStateWithLifecycle(),
+                darkTheme = settingsRepository.darkTheme.collectAsStateWithLifecycle(
+                    initialValue = false,
+                    lifecycle = lifecycle,
+                ).value,
+                dynamicColor = settingsRepository.dynamicColors.collectAsStateWithLifecycle(
+                    initialValue = true,
+                    lifecycle = lifecycle,
+                ).value,
             ) {
                 AppNavigation()
             }

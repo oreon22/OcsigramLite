@@ -29,8 +29,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun crashReporter(): CrashReporter =
-        FirebaseApp.getApps(null).firstOrNull()?.let {
+    fun crashReporter(@ApplicationContext context: Context): CrashReporter =
+        FirebaseApp.getApps(context).firstOrNull()?.let {
             FirebaseCrashReporter(FirebaseCrashlytics.getInstance())
         } ?: NoOpCrashReporter()
 }
