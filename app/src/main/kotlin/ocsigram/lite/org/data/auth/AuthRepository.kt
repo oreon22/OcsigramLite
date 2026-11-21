@@ -23,7 +23,7 @@ class AuthRepository @Inject constructor(private val gateway: TdGateway) {
     }
 
     suspend fun register(firstName: String, lastName: String) {
-        gateway.send(TdApi.RegisterUser(firstName, lastName))
+        gateway.send(TdApi.RegisterUser(firstName, lastName, false))
     }
 
     suspend fun logOut() {

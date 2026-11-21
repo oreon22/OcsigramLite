@@ -1,9 +1,10 @@
 [versions]
-agp = "9.5.1"
+agp = "9.4.1"
 kotlin = "2.4.21"
 ksp = "2.3.14"
 hilt = "2.59.2"
 androidx-hilt = "1.4.0"
+androidx-annotation = "1.9.1"
 compose-bom = "2026.11.01"
 navigation-compose = "2.10.2"
 core-splashscreen = "1.2.0"
@@ -44,6 +45,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "androidx-hilt" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }

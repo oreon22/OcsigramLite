@@ -4,7 +4,7 @@ OcsiGram — основа Android-клиента Telegram на TDLib. В это�
 
 ## Требования
 
-- Android Studio с SDK Platform 37 и Build Tools 36 или новее.
+- Android Studio с SDK Platform 37.2 и Build Tools 36 или новее.
 - JDK 17 (JDK 21 тоже подходит).
 - Устройство или эмулятор Android 14 и новее.
 - APK предназначен для ABI `arm64-v8a` и `x86_64`.

@@ -38,7 +38,11 @@ fun String.envName(): String = when (this) {
 
 android {
     namespace = "ocsigram.lite.org"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = "ocsigram.lite.org"
