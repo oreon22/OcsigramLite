@@ -1,0 +1,14 @@
+{
+  "project_info": {
+    "project_id": "replace-with-your-project",
+    "project_number": "000000000000"
+  },
+  "client": [{
+    "client_info": {
+      "mobilesdk_app_id": "1:000000000000:android:prod",
+      "android_client_info": {"package_name": "ocsigram.lite.org"}
+    },
+    "api_key": [{"current_key": "replace-me"}]
+  }],
+  "configuration_version": "1"
+}

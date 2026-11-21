@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OcsiGram</string>
+    <string name="loading">Загрузка</string>
+    <string name="phone">Номер телефона</string>
+    <string name="code">Код</string>
+    <string name="password">Пароль</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="continue_action">Продолжить</string>
+    <string name="chats">Чаты</string>
+    <string name="no_chats">Чатов пока нет</string>
+    <string name="settings">Настройки</string>
+    <string name="theme">Тема</string>
+    <string name="theme_system">Системная</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="dynamic_colors">Динамические цвета</string>
+    <string name="about">О приложении</string>
+    <string name="logs">Логи</string>
+    <string name="debug">Отладка</string>
+    <string name="share_logs">Поделиться логами</string>
+    <string name="clear_logs">Очистить логи</string>
+    <string name="logs_warning">В логах могут находиться личные данные. Не отправляйте их всем подряд.</string>
+    <string name="notification_permission">Разрешить уведомления</string>
+    <string name="notification_channel">Уведомления OcsiGram</string>
+    <string name="unsupported_auth">Этот способ авторизации пока не поддерживается</string>
+    <string name="retry">Повторить</string>
+</resources>

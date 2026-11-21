@@ -1,0 +1,13 @@
+/.gradle/
+/build/
+/local.properties
+.DS_Store
+*.iml
+.idea/
+
+config/tdlib.properties
+config/signing.properties
+*.jks
+*.keystore
+app/src/prod/google-services.json
+app/src/beta/google-services.json

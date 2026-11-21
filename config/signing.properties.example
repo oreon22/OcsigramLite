@@ -1,0 +1,4 @@
+storeFile=../config/ocsigram-release.jks
+storePassword=change-me
+keyAlias=ocsigram
+keyPassword=change-me

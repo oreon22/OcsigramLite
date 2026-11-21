@@ -1,0 +1,23 @@
+name: Android build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Copy example configuration
+        run: |
+          cp -n config/tdlib.properties.example config/tdlib.properties
+          cp -n config/signing.properties.example config/signing.properties
+      - name: Build and test
+        run: |
+          ./gradlew :app:assembleProdDebug :app:assembleBetaDebug :app:testProdDebugUnitTest :app:lintProdDebug
