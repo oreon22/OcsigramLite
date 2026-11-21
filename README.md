@@ -65,6 +65,7 @@ keytool -genkeypair -v -keystore config/ocsigram-release.jks \
 - `app/src/beta/google-services.json`.
 
 Firebase отключается автоматически, если хотя бы одного файла нет.
+Чтобы принудительно отключить Firebase, установите `firebaseEnabled=false` в `gradle.properties` или передайте `-PfirebaseEnabled=false`. При выключенном Firebase используются NoOp analytics/crash reporter, FCM service отключён, а Firebase Gradle-плагины не применяются. Firebase SDK остаётся зависимостью приложения, так как Firebase реализации компилируются вместе с ним.
 
 ### TDLib
 

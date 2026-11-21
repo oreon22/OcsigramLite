@@ -25,6 +25,7 @@
         </activity>
         <service
             android:name=".core.push.OcsiFirebaseMessagingService"
+            android:enabled="${firebaseMessagingEnabled}"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

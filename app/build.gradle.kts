@@ -18,6 +18,13 @@ val tdlibProperties = Properties().apply {
     }
 }
 
+val firebaseEnabled = providers.gradleProperty("firebaseEnabled")
+    .map(String::toBooleanStrict)
+    .getOrElse(true)
+val prodGoogleServices = file("src/prod/google-services.json")
+val betaGoogleServices = file("src/beta/google-services.json")
+val firebaseConfigured = firebaseEnabled && prodGoogleServices.exists() && betaGoogleServices.exists()
+
 val signingProperties = Properties()
 val signingFile = rootProject.file("config/signing.properties")
 if (signingFile.exists()) {
@@ -52,6 +59,8 @@ android {
         versionCode = providers.gradleProperty("appVersionCode").get().toInt()
         buildConfigField("int", "TDLIB_API_ID", tdlibProperties.getProperty("api_id"))
         buildConfigField("String", "TDLIB_API_HASH", "\"${tdlibProperties.getProperty("api_hash")}\"")
+        buildConfigField("boolean", "FIREBASE_ENABLED", firebaseConfigured.toString())
+        manifestPlaceholders["firebaseMessagingEnabled"] = firebaseConfigured.toString()
 
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
@@ -168,22 +177,29 @@ dependencies {
     implementation(libs.profileinstaller)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
 
     debugImplementation(libs.leakcanary)
+configurations.configureEach {
+    if (name.startsWith("hiltAnnotationProcessor")) {
+        resolutionStrategy.force(
+            "org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}"
+        )
+    }
+}
+
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
 }
 
-val prodGoogleServices = file("src/prod/google-services.json")
-val betaGoogleServices = file("src/beta/google-services.json")
-if (prodGoogleServices.exists() && betaGoogleServices.exists()) {
+if (firebaseConfigured) {
     apply(plugin = "com.google.gms.google-services")
     apply(plugin = "com.google.firebase.crashlytics")
+} else if (!firebaseEnabled) {
+    logger.lifecycle("OCSIGRAM: Firebase выключен через firebaseEnabled=false.")
 } else {
     logger.warn("OCSIGRAM: Firebase отключён — отсутствуют google-services.json для prod и/или beta.")
 }

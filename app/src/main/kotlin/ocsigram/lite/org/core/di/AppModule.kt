@@ -15,6 +15,7 @@ import ocsigram.lite.org.core.analytics.FirebaseAnalyticsTracker
 import ocsigram.lite.org.core.analytics.FirebaseCrashReporter
 import ocsigram.lite.org.core.analytics.NoOpAnalyticsTracker
 import ocsigram.lite.org.core.analytics.NoOpCrashReporter
+import ocsigram.lite.org.BuildConfig
 import javax.inject.Singleton
 
 @Module
@@ -23,14 +24,18 @@ object AppModule {
     @Provides
     @Singleton
     fun analytics(@ApplicationContext context: Context): AnalyticsTracker =
-        FirebaseApp.getApps(context).firstOrNull()?.let {
+        if (BuildConfig.FIREBASE_ENABLED && FirebaseApp.getApps(context).isNotEmpty()) {
             FirebaseAnalyticsTracker(FirebaseAnalytics.getInstance(context))
-        } ?: NoOpAnalyticsTracker()
+        } else {
+            NoOpAnalyticsTracker()
+        }
 
     @Provides
     @Singleton
     fun crashReporter(@ApplicationContext context: Context): CrashReporter =
-        FirebaseApp.getApps(context).firstOrNull()?.let {
+        if (BuildConfig.FIREBASE_ENABLED && FirebaseApp.getApps(context).isNotEmpty()) {
             FirebaseCrashReporter(FirebaseCrashlytics.getInstance())
-        } ?: NoOpCrashReporter()
+        } else {
+            NoOpCrashReporter()
+        }
 }
