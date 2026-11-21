@@ -16,7 +16,7 @@ class OcsiFirebaseMessagingService : FirebaseMessagingService() {
         gateway.runCatching {
             TdApi.DeviceTokenFirebaseCloudMessaging(token, false)
         }
-        // TODO: register after TDLib API signatures are checked against copied TdApi.java.
+        // TODO: Register the token with TDLib using RegisterDevice.
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
