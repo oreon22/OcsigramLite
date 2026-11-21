@@ -34,6 +34,7 @@ class TdClient @Inject constructor(
     override val authState: StateFlow<AuthState> = authFlow
 
     init {
+        TdlibNative.ensureLoaded()
         createClient()
     }
 
