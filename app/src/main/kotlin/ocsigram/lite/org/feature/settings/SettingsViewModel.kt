@@ -11,6 +11,7 @@ import ocsigram.lite.org.core.flavor.FlavorFeatures
 import ocsigram.lite.org.data.settings.SettingsRepository
 import ocsigram.lite.org.data.settings.ThemeMode
 import javax.inject.Inject
+import ocsigram.lite.org.core.messaging.AppMessenger
 
 data class SettingsUiState(
     val theme: ThemeMode = ThemeMode.SYSTEM,
@@ -25,6 +26,7 @@ class SettingsViewModel @Inject constructor(
     private val settings: SettingsRepository,
     private val gateway: TdGateway,
     val flavorFeatures: FlavorFeatures,
+    val messenger: AppMessenger,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState

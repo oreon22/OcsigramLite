@@ -1,6 +1,5 @@
 package ocsigram.lite.org.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -120,7 +119,7 @@ fun OcsiGramTheme(
 ) {
     val context = LocalContext.current
     val dark = darkTheme.value ?: isSystemInDarkTheme()
-    val dynamic = dynamicColor.value && Build.VERSION.SDK_INT >= 31
+    val dynamic = dynamicColor.value
     val colorScheme = when {
         dynamic && dark -> dynamicDarkColorScheme(context)
         dynamic -> dynamicLightColorScheme(context)

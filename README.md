@@ -134,3 +134,13 @@ AGP выравнивает несжатые native-библиотеки внут
 
 - https://developer.android.com/guide/practices/page-sizes
 - https://developer.android.com/topic/performance/baselineprofiles/overview
+
+## Как смотреть превью в Android Studio
+
+1. Откройте любой файл экрана или `app/src/main/kotlin/ocsigram/lite/org/ui/preview/ComponentsGalleryPreview.kt`.
+2. Переключите редактор в режим Split или Design.
+3. Нажмите **Build & Refresh** в панели Preview.
+4. В списке превью выберите конкретный экран или галерею; интерактивный режим запускается кнопкой **Interactive** в панели Preview.
+5. Для проверки на телефоне нажмите **Deploy Preview** рядом с выбранным превью.
+
+Справка: https://developer.android.com/develop/ui/compose/tooling/previews

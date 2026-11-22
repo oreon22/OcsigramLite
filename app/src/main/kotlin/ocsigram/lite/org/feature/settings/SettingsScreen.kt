@@ -37,6 +37,7 @@ import ocsigram.lite.org.R
 import ocsigram.lite.org.data.settings.ThemeMode
 import ocsigram.lite.org.ui.components.SectionHeader
 import ocsigram.lite.org.ui.theme.OcsiGramTheme
+import ocsigram.lite.org.ui.components.PalettePreview
 
 @Composable
 fun SettingsRoute(
@@ -124,6 +125,7 @@ fun SettingsScreen(
                             },
                         )
                     }
+                    PalettePreview(modifier = Modifier.padding(12.dp))
                 }
             }
 

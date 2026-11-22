@@ -8,9 +8,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import ocsigram.lite.org.data.auth.AuthRepository
 import ocsigram.lite.org.data.auth.AuthState
 import javax.inject.Inject
+import ocsigram.lite.org.core.messaging.AppMessenger
 
 data class AuthUiState(
     val authState: AuthState = AuthState.Loading,
@@ -29,7 +32,11 @@ data class AuthUiState(
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val messenger: AppMessenger,
 ) : ViewModel() {
+    private val exceptionHandler = CoroutineExceptionHandler { _, error ->
+        if (!isUserInputError(error)) messenger.showError("auth.viewmodel", error)
+    }
     private var savedPhone
         get() = savedStateHandle.get<String>("phone").orEmpty()
         set(value) = savedStateHandle.set("phone", value)
@@ -54,7 +61,7 @@ class AuthViewModel @Inject constructor(
     val uiState: StateFlow<AuthUiState> = _uiState
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.state.collect { state ->
                 _uiState.update { it.copy(authState = state, busy = false) }
             }
@@ -87,7 +94,7 @@ class AuthViewModel @Inject constructor(
 
     fun submit() {
         val state = _uiState.value
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             _uiState.update { it.copy(busy = true, error = null) }
             runCatching {
                 when (state.authState) {
@@ -105,7 +112,18 @@ class AuthViewModel @Inject constructor(
                         error = repository.formatError(error),
                     )
                 }
+                if (!isUserInputError(error)) messenger.showError("auth.submit", error)
             }
         }
+    }
+
+    private fun isUserInputError(error: Throwable): Boolean {
+        val message = error.message.orEmpty()
+        return message.contains("PHONE_NUMBER_INVALID") ||
+            message.contains("PHONE_CODE_INVALID") ||
+            message.contains("PHONE_CODE_EXPIRED") ||
+            message.contains("PASSWORD_HASH_INVALID") ||
+            Regex("FLOOD_WAIT_\\d+").containsMatchIn(message) ||
+            message.contains("NETWORK")
     }
 }

@@ -2,6 +2,15 @@
 
 Этот файл описывает назначение файлов проекта и действия, которые нужно выполнить вручную.
 
+## Новые файлы интерфейса и уведомлений
+
+- `app/src/main/kotlin/ocsigram/lite/org/ui/components/PrimaryButton.kt` — основная тональная кнопка.
+- `app/src/main/kotlin/ocsigram/lite/org/ui/components/Loaders.kt` — волнистые индикаторы загрузки.
+- `app/src/main/kotlin/ocsigram/lite/org/ui/components/PalettePreview.kt` — предпросмотр пяти ролей палитры.
+- `app/src/main/kotlin/ocsigram/lite/org/core/messaging/AppMessenger.kt` — единый поток глобальных Snackbar.
+- `app/src/main/kotlin/ocsigram/lite/org/core/messaging/ErrorReportBuilder.kt` — сбор и маскирование отчёта об ошибке.
+- `app/src/main/kotlin/ocsigram/lite/org/ui/preview/ComponentsGalleryPreview.kt` — статичная и динамическая галерея компонентов.
+
 ## Корневые файлы
 
 ### `settings.gradle.kts`

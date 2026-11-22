@@ -1,6 +1,7 @@
 package ocsigram.lite.org.core.flavor
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -11,13 +12,27 @@ import ocsigram.lite.org.feature.settings.BetaLogsScreen
 import ocsigram.lite.org.feature.settings.BetaDebugScreen
 import ocsigram.lite.org.feature.settings.BetaLogsRoute
 import ocsigram.lite.org.feature.settings.BetaDebugRoute
+import ocsigram.lite.org.core.debug.FileLoggingTree
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BetaFlavorFeatures @Inject constructor() : ocsigram.lite.org.core.flavor.FlavorFeatures {
+class BetaFlavorFeatures @Inject constructor(
+    @ApplicationContext private val context: Context,
+) : ocsigram.lite.org.core.flavor.FlavorFeatures {
     override fun configure(context: Context) {
         ocsigram.lite.org.core.debug.FileLoggingTree.install(context)
+    }
+
+    override fun recentLogText(): String {
+        val directory = FileLoggingTree.logsDirectory(context)
+        val files = directory.listFiles()?.filter { it.name.startsWith("app.log") }?.sortedByDescending { it.name } ?: return ""
+        return files.asSequence()
+            .flatMap { it.readLines().asSequence() }
+            .toList()
+            .takeLast(200)
+            .joinToString("\n")
+            .let { text -> if (text.length > 50 * 1024) text.takeLast(50 * 1024) else text }
     }
 
     @Composable

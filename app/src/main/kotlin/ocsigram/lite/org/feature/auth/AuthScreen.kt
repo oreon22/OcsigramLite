@@ -27,8 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +53,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ocsigram.lite.org.R
 import ocsigram.lite.org.data.auth.AuthState
 import ocsigram.lite.org.ui.components.PrimaryButton
+import ocsigram.lite.org.ui.components.FullScreenLoader
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import ocsigram.lite.org.ui.theme.OcsiGramTheme
 
 @Composable
@@ -81,12 +81,7 @@ fun AuthScreen(
     onLastNameChanged: (String) -> Unit,
     onSubmit: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(state.error) {
-        state.error?.let { snackbarHostState.showSnackbar(it) }
-    }
-
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
+    Scaffold { padding ->
         Box(
             modifier = Modifier.fillMaxSize().padding(padding).imePadding(),
             contentAlignment = Alignment.Center,
@@ -366,13 +361,9 @@ private fun UnsupportedStep(onRetry: () -> Unit) {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun LoadingStep() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        androidx.compose.material3.CircularProgressIndicator()
-    }
+    FullScreenLoader(modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp))
 }
 
 @PreviewLightDark
