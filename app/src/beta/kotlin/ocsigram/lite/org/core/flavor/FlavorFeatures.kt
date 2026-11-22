@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ocsigram.lite.org.feature.settings.BetaLogsScreen
 import ocsigram.lite.org.feature.settings.BetaDebugScreen
+import ocsigram.lite.org.feature.settings.BetaLogsRoute
+import ocsigram.lite.org.feature.settings.BetaDebugRoute
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,10 +22,9 @@ class BetaFlavorFeatures @Inject constructor() : ocsigram.lite.org.core.flavor.F
 
     @Composable
     override fun ExtraDestinations() {
-        Column(Modifier.padding(16.dp)) {
-            Text("Логи и отладка доступны в настройках.")
-            BetaLogsScreen()
-            BetaDebugScreen()
-        }
+        Unit
     }
+
+    @Composable override fun BetaLogsScreen(onBack: () -> Unit) = BetaLogsRoute(onBack)
+    @Composable override fun BetaDebugScreen(onBack: () -> Unit) = BetaDebugRoute(onBack)
 }

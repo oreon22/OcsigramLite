@@ -182,7 +182,6 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
 
-    debugImplementation(libs.leakcanary)
 configurations.configureEach {
     if (name.startsWith("hiltAnnotationProcessor")) {
         resolutionStrategy.force(

@@ -11,4 +11,7 @@ class ProdFlavorFeatures @Inject constructor() : ocsigram.lite.org.core.flavor.F
 
     @Composable
     override fun ExtraDestinations() = Unit
+
+    @Composable override fun BetaLogsScreen(onBack: () -> Unit) = Unit
+    @Composable override fun BetaDebugScreen(onBack: () -> Unit) = Unit
 }

@@ -28,7 +28,13 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
         }
     }
 
-    val darkTheme: Flow<Boolean> = theme.map { it == ThemeMode.DARK }
+    val darkTheme: Flow<Boolean?> = theme.map {
+        when (it) {
+            ThemeMode.DARK -> true
+            ThemeMode.LIGHT -> false
+            ThemeMode.SYSTEM -> null
+        }
+    }
     val dynamicColors: Flow<Boolean> = context.dataStore.data.map {
         it[dynamicKey] ?: true
     }

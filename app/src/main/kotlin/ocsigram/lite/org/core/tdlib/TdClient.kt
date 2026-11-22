@@ -71,7 +71,7 @@ class TdClient @Inject constructor(
 
     override suspend fun getTdlibVersion(): String = withContext(Dispatchers.IO) {
         val result = Client.execute(TdApi.GetOption("version"))
-        if (result is TdApi.OptionValueString) result.value else "неизвестно"
+        if (result is TdApi.OptionValueString) result.value else "unknown"
     }
 
     private fun handleAuthorizationState(state: TdApi.AuthorizationState) {

@@ -1,6 +1,7 @@
 package ocsigram.lite.org.feature.auth
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +28,29 @@ data class AuthUiState(
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(AuthUiState())
+    private var savedPhone
+        get() = savedStateHandle.get<String>("phone").orEmpty()
+        set(value) = savedStateHandle.set("phone", value)
+    private var savedCode
+        get() = savedStateHandle.get<String>("code").orEmpty()
+        set(value) = savedStateHandle.set("code", value)
+    private var savedFirstName
+        get() = savedStateHandle.get<String>("firstName").orEmpty()
+        set(value) = savedStateHandle.set("firstName", value)
+    private var savedLastName
+        get() = savedStateHandle.get<String>("lastName").orEmpty()
+        set(value) = savedStateHandle.set("lastName", value)
+
+    private val _uiState = MutableStateFlow(
+        AuthUiState(
+            phone = savedPhone,
+            code = savedCode,
+            firstName = savedFirstName,
+            lastName = savedLastName,
+        ),
+    )
     val uiState: StateFlow<AuthUiState> = _uiState
 
     init {
@@ -39,11 +61,29 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun phoneChanged(value: String) = _uiState.update { it.copy(phone = value, error = null) }
-    fun codeChanged(value: String) = _uiState.update { it.copy(code = value, error = null) }
+    fun phoneChanged(value: String) {
+        val normalized = if (value.startsWith("+")) {
+            "+" + value.drop(1).filter { it.isDigit() || it == ' ' }
+        } else {
+            value.filter { it.isDigit() || it == ' ' }
+        }
+        savedPhone = normalized
+        _uiState.update { it.copy(phone = normalized, error = null) }
+    }
+    fun codeChanged(value: String) {
+        val filtered = value.filter(Char::isDigit)
+        savedCode = filtered
+        _uiState.update { it.copy(code = filtered, error = null) }
+    }
     fun passwordChanged(value: String) = _uiState.update { it.copy(password = value, error = null) }
-    fun firstNameChanged(value: String) = _uiState.update { it.copy(firstName = value, error = null) }
-    fun lastNameChanged(value: String) = _uiState.update { it.copy(lastName = value, error = null) }
+    fun firstNameChanged(value: String) {
+        savedFirstName = value
+        _uiState.update { it.copy(firstName = value, error = null) }
+    }
+    fun lastNameChanged(value: String) {
+        savedLastName = value
+        _uiState.update { it.copy(lastName = value, error = null) }
+    }
 
     fun submit() {
         val state = _uiState.value

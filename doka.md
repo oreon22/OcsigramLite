@@ -216,7 +216,6 @@ tdlib/src/main/java/org/drinkless/tdlib/
 - имя приложения и Application-класс;
 - MainActivity;
 - FCM-сервис с `exported=false`;
-- FileProvider для обмена файлами в бете;
 - запрет резервного копирования через настройки приложения.
 
 FCM-сервис менять не требуется до проверки реальных сигнатур TDLib.
@@ -225,7 +224,7 @@ FCM-сервис менять не требуется до проверки ре
 
 Исключает каталог TDLib из Android backup и device transfer.
 
-### `app/src/main/res/xml/file_paths.xml`
+### `app/src/beta/res/xml/file_paths.xml`
 
 Разрешает beta-экранам отдавать через FileProvider только папку `logs`.
 

@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OcsiGramTheme(
                 darkTheme = settingsRepository.darkTheme.collectAsStateWithLifecycle(
-                    initialValue = false,
+                    initialValue = null,
                     lifecycle = lifecycle,
                 ),
                 dynamicColor = settingsRepository.dynamicColors.collectAsStateWithLifecycle(
