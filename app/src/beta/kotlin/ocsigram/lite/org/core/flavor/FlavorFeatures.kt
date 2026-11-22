@@ -29,9 +29,10 @@ class BetaFlavorFeatures @Inject constructor(
         val files = directory.listFiles()?.filter { it.name.startsWith("app.log") }?.sortedByDescending { it.name } ?: return ""
         return files.asSequence()
             .flatMap { it.readLines().asSequence() }
+            .toList()
             .takeLast(200)
             .joinToString("\n")
-            .let { if (it.length > 50 * 1024) it.takeLast(50 * 1024) else it }
+            .let { text -> if (text.length > 50 * 1024) text.takeLast(50 * 1024) else text }
     }
 
     @Composable

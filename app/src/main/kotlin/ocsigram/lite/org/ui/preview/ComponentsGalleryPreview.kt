@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import ocsigram.lite.org.R
 import ocsigram.lite.org.ui.components.ButtonLoader
@@ -75,7 +74,7 @@ private fun ComponentsGallery(dynamic: Boolean) {
                 modifier = Modifier.fillMaxWidth(),
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                actionColor = MaterialTheme.colorScheme.onErrorContainer,
+                actionContentColor = MaterialTheme.colorScheme.onErrorContainer,
                 dismissActionContentColor = MaterialTheme.colorScheme.onErrorContainer,
                 action = { TextButton(onClick = {}) { Text(stringResource(R.string.copy_log)) } },
                 dismissAction = {
@@ -94,7 +93,6 @@ private fun ComponentsGalleryStaticPreview() {
 }
 
 @PreviewDynamicColors(
-    wallpapers = [Wallpapers.RED, Wallpapers.BLUE, Wallpapers.GREEN, Wallpapers.YELLOW],
 )
 @Composable
 private fun ComponentsGalleryDynamicPreview() {

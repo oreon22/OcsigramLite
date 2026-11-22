@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import ocsigram.lite.org.R
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -46,17 +47,17 @@ fun PalettePreview(modifier: Modifier = Modifier) {
                     color = color,
                 ) {}
             }
-
-            @PreviewLightDark
-            @Composable
-            private fun PalettePreviewPreview() {
-                OcsiGramTheme(
-                    darkTheme = remember { mutableStateOf(false) },
-                    dynamicColor = remember { mutableStateOf(false) },
-                ) {
-                    PalettePreview(modifier = Modifier.padding(16.dp))
-                }
-            }
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun PalettePreviewPreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        PalettePreview(modifier = Modifier.padding(16.dp))
     }
 }
