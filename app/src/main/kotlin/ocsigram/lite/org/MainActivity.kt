@@ -10,12 +10,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import ocsigram.lite.org.data.settings.SettingsRepository
 import ocsigram.lite.org.navigation.AppNavigation
 import ocsigram.lite.org.ui.theme.OcsiGramTheme
+import ocsigram.lite.org.core.messaging.AppMessenger
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsRepository: SettingsRepository
+    @Inject
+    lateinit var appMessenger: AppMessenger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -32,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     lifecycle = lifecycle,
                 ),
             ) {
-                AppNavigation()
+                AppNavigation(appMessenger)
             }
         }
     }

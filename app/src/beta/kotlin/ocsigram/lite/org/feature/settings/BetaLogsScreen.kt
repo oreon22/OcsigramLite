@@ -36,11 +36,11 @@ fun BetaLogsRoute(onBack: () -> Unit) = BetaLogsScreen(onBack)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BetaLogsScreen(onBack: () -> Unit) {
+fun BetaLogsScreen(onBack: () -> Unit, previewLines: List<String>? = null) {
     val context = LocalContext.current
     var shareDialog by remember { mutableStateOf(false) }
     var clearDialog by remember { mutableStateOf(false) }
-    val lines = remember {
+    val lines = previewLines ?: remember {
         FileLoggingTree.logsDirectory(context).listFiles()?.sortedBy { it.name }
             ?.flatMap { it.readLines() }?.ifEmpty { listOf("") } ?: listOf("")
     }
@@ -128,5 +128,5 @@ private fun BetaLogsPreview() {
     OcsiGramTheme(
         darkTheme = remember { mutableStateOf(false) },
         dynamicColor = remember { mutableStateOf(false) },
-    ) { BetaLogsScreen(onBack = {}) }
+    ) { BetaLogsScreen(onBack = {}, previewLines = listOf("2026-11-22 Пример лога")) }
 }
