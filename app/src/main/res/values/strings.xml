@@ -43,7 +43,7 @@
     <string name="chats_empty_body">Начните переписку в Telegram</string>
     <string name="back">Назад</string>
     <string name="open_settings">Настройки</string>
-    <string name="dynamic_colors_support">Использовать цвета обоев и темы системы</string>
+    <string name="dynamic_colors_support">Цвета приложения берутся из обоев телефона</string>
     <string name="testing">Для тестирования</string>
     <string name="app_version">Версия приложения</string>
     <string name="flavor">Вариант сборки</string>
@@ -59,4 +59,16 @@
     <string name="debug_flavor">Вариант сборки</string>
     <string name="debug_auth_state">Состояние авторизации</string>
     <string name="debug_abi">ABI устройства</string>
+    <string name="error_default">Что-то пошло не так</string>
+    <string name="copy_log">Копировать лог</string>
+    <string name="signed_in">Вы вошли в OcsiGram</string>
+    <string name="error_report">Отчёт об ошибке OcsiGram</string>
+    <string name="debug_test_error">Показать тестовую ошибку</string>
+    <string name="debug_test_message">Показать тестовое сообщение</string>
+    <string name="palette_preview">Предпросмотр палитры</string>
+    <string name="disabled_preview">Отключена</string>
+    <string name="loading_preview">Загрузка</string>
+    <string name="with_icon_preview">С иконкой</string>
+    <string name="invalid_code_preview">Код указан неверно</string>
+    <string name="phone_preview_value">Телефон</string>
 </resources>
