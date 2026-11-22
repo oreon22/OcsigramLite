@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -46,6 +48,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ocsigram.lite.org.R
@@ -90,11 +94,10 @@ fun AuthScreen(
             Column(
                 modifier = Modifier
                     .widthIn(max = 480.dp)
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
             ) {
                 val stepKey = when (state.authState) {
                     AuthState.WaitPhone -> "phone"
@@ -129,11 +132,7 @@ fun AuthScreen(
                             onSubmit,
                         )
                         "unsupported" -> UnsupportedStep(onSubmit)
-                        else -> Box(Modifier.fillMaxWidth().padding(vertical = 48.dp)) {
-                            androidx.compose.material3.CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
+                        else -> LoadingStep()
                     }
                 }
             }
@@ -142,98 +141,164 @@ fun AuthScreen(
 }
 
 @Composable
-private fun AuthHeader(title: String, body: String) {
-    Card(
-        modifier = Modifier.size(72.dp),
-        shape = MaterialTheme.shapes.extraLarge,
+private fun AuthStepLayout(
+    title: String,
+    body: String,
+    fields: @Composable () -> Unit,
+    action: @Composable () -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Icon(
-                painter = painterResource(R.drawable.ic_ocsi_ring),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp),
+        Card(
+            modifier = Modifier.size(72.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+        ) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_ocsi_ring),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(40.dp),
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        if (body.isNotBlank()) {
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
             )
         }
+        Spacer(modifier = Modifier.height(24.dp))
+        fields()
+        Spacer(modifier = Modifier.height(24.dp))
+        action()
     }
-    Text(
-        text = title,
-        modifier = Modifier.padding(top = 16.dp),
-        style = MaterialTheme.typography.headlineMedium,
-        textAlign = TextAlign.Center,
-    )
-    Text(
-        text = body,
-        modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-    )
 }
 
 @Composable
 private fun PhoneStep(state: AuthUiState, onChange: (String) -> Unit, onSubmit: () -> Unit) {
     val keyboard = LocalSoftwareKeyboardController.current
-    AuthHeader(stringResource(R.string.auth_phone_title), stringResource(R.string.auth_phone_body))
-    OutlinedTextField(
-        value = state.phone,
-        onValueChange = onChange,
-        label = { Text(stringResource(R.string.phone)) },
-        leadingIcon = { Icon(painterResource(R.drawable.ic_phone), contentDescription = null) },
-        supportingText = { Text(stringResource(R.string.auth_phone_support)) },
-        isError = state.error != null,
-        enabled = !state.busy,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
-        modifier = Modifier.fillMaxWidth(),
+    AuthStepLayout(
+        title = stringResource(R.string.auth_phone_title),
+        body = stringResource(R.string.auth_phone_body),
+        fields = {
+            OutlinedTextField(
+                value = state.phone,
+                onValueChange = onChange,
+                label = { Text(stringResource(R.string.phone)) },
+                leadingIcon = { Icon(painterResource(R.drawable.ic_phone), contentDescription = null) },
+                supportingText = { Text(stringResource(R.string.auth_phone_support)) },
+                isError = state.error != null,
+                enabled = !state.busy,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        action = {
+            PrimaryButton(
+                stringResource(R.string.continue_action),
+                onSubmit,
+                Modifier.fillMaxWidth(),
+                state.busy,
+            )
+        },
     )
-    PrimaryButton(stringResource(R.string.continue_action), onSubmit, Modifier.padding(top = 24.dp), state.busy)
 }
 
 @Composable
 private fun CodeStep(state: AuthUiState, onChange: (String) -> Unit, onSubmit: () -> Unit) {
     val keyboard = LocalSoftwareKeyboardController.current
-    AuthHeader(stringResource(R.string.auth_code_title), stringResource(R.string.auth_code_body))
-    OutlinedTextField(
-        value = state.code,
-        onValueChange = onChange,
-        label = { Text(stringResource(R.string.code)) },
-        supportingText = { Text(stringResource(R.string.auth_code_support)) },
-        enabled = !state.busy,
-        isError = state.error != null,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
-        modifier = Modifier.fillMaxWidth(),
+    AuthStepLayout(
+        title = stringResource(R.string.auth_code_title),
+        body = stringResource(R.string.auth_code_body),
+        fields = {
+            OutlinedTextField(
+                value = state.code,
+                onValueChange = onChange,
+                label = { Text(stringResource(R.string.code)) },
+                supportingText = { Text(stringResource(R.string.auth_code_support)) },
+                enabled = !state.busy,
+                isError = state.error != null,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        action = {
+            PrimaryButton(
+                stringResource(R.string.continue_action),
+                onSubmit,
+                Modifier.fillMaxWidth(),
+                state.busy,
+            )
+        },
     )
-    PrimaryButton(stringResource(R.string.continue_action), onSubmit, Modifier.padding(top = 24.dp), state.busy)
 }
 
 @Composable
 private fun PasswordStep(state: AuthUiState, hint: String, onChange: (String) -> Unit, onSubmit: () -> Unit) {
     val keyboard = LocalSoftwareKeyboardController.current
     var visible by rememberSaveable { mutableStateOf(false) }
-    AuthHeader(stringResource(R.string.auth_password_title), stringResource(R.string.auth_password_body))
-    OutlinedTextField(
-        value = state.password,
-        onValueChange = onChange,
-        label = { Text(stringResource(R.string.password)) },
-        supportingText = { Text(hint.ifBlank { stringResource(R.string.auth_password_support) }) },
-        enabled = !state.busy,
-        isError = state.error != null,
-        visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            IconButton(onClick = { visible = !visible }) {
-                Icon(
-                    painter = painterResource(if (visible) R.drawable.ic_visibility_off else R.drawable.ic_visibility),
-                    contentDescription = stringResource(if (visible) R.string.hide_password else R.string.show_password),
-                )
-            }
+    AuthStepLayout(
+        title = stringResource(R.string.auth_password_title),
+        body = stringResource(R.string.auth_password_body),
+        fields = {
+            OutlinedTextField(
+                value = state.password,
+                onValueChange = onChange,
+                label = { Text(stringResource(R.string.password)) },
+                supportingText = { Text(hint.ifBlank { stringResource(R.string.auth_password_support) }) },
+                enabled = !state.busy,
+                isError = state.error != null,
+                visualTransformation =
+                    if (visible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { visible = !visible }) {
+                        Icon(
+                            painter = painterResource(
+                                if (visible) R.drawable.ic_visibility_off else R.drawable.ic_visibility,
+                            ),
+                            contentDescription = stringResource(
+                                if (visible) R.string.hide_password else R.string.show_password,
+                            ),
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
+                modifier = Modifier.fillMaxWidth(),
+            )
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
-        modifier = Modifier.fillMaxWidth(),
+        action = {
+            PrimaryButton(
+                stringResource(R.string.continue_action),
+                onSubmit,
+                Modifier.fillMaxWidth(),
+                state.busy,
+            )
+        },
     )
-    PrimaryButton(stringResource(R.string.continue_action), onSubmit, Modifier.padding(top = 24.dp), state.busy)
 }
 
 @Composable
@@ -244,44 +309,193 @@ private fun RegistrationStep(
     onSubmit: () -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
-    AuthHeader(stringResource(R.string.auth_registration_title), stringResource(R.string.auth_registration_body))
-    OutlinedTextField(
-        value = state.firstName,
-        onValueChange = onFirstName,
-        label = { Text(stringResource(R.string.first_name)) },
-        enabled = !state.busy,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        modifier = Modifier.fillMaxWidth(),
+    AuthStepLayout(
+        title = stringResource(R.string.auth_registration_title),
+        body = stringResource(R.string.auth_registration_body),
+        fields = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedTextField(
+                    value = state.firstName,
+                    onValueChange = onFirstName,
+                    label = { Text(stringResource(R.string.first_name)) },
+                    enabled = !state.busy,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = state.lastName,
+                    onValueChange = onLastName,
+                    label = { Text(stringResource(R.string.last_name)) },
+                    enabled = !state.busy,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        action = {
+            PrimaryButton(
+                stringResource(R.string.continue_action),
+                onSubmit,
+                Modifier.fillMaxWidth(),
+                state.busy,
+            )
+        },
     )
-    OutlinedTextField(
-        value = state.lastName,
-        onValueChange = onLastName,
-        label = { Text(stringResource(R.string.last_name)) },
-        enabled = !state.busy,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { keyboard?.hide(); onSubmit() }),
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-    )
-    PrimaryButton(stringResource(R.string.continue_action), onSubmit, Modifier.padding(top = 24.dp), state.busy)
 }
 
 @Composable
 private fun UnsupportedStep(onRetry: () -> Unit) {
-    AuthHeader(stringResource(R.string.unsupported_auth), "")
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(R.string.unsupported_auth),
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge,
-        )
+    AuthStepLayout(
+        title = stringResource(R.string.unsupported_auth),
+        body = "",
+        fields = {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(R.string.unsupported_auth),
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        },
+        action = { PrimaryButton(stringResource(R.string.retry), onRetry) },
+    )
+}
+
+@Composable
+private fun LoadingStep() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        androidx.compose.material3.CircularProgressIndicator()
     }
-    PrimaryButton(stringResource(R.string.retry), onRetry, Modifier.padding(top = 24.dp))
 }
 
 @PreviewLightDark
 @Composable
 private fun AuthPhonePreview() {
-    OcsiGramTheme(darkTheme = remember { mutableStateOf(false) }, dynamicColor = remember { mutableStateOf(false) }) {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf<Boolean?>(null) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
         AuthScreen(AuthUiState(authState = AuthState.WaitPhone), {}, {}, {}, {}, {}, {})
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AuthCodePreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf<Boolean?>(null) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(
+            AuthUiState(authState = AuthState.WaitCode, code = "12345"),
+            {}, {}, {}, {}, {}, {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AuthPasswordPreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf<Boolean?>(null) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(
+            AuthUiState(
+                authState = AuthState.WaitPassword("Минимум 8 символов"),
+                password = "password",
+            ),
+            {}, {}, {}, {}, {}, {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun AuthRegistrationPreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf<Boolean?>(null) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(
+            AuthUiState(
+                authState = AuthState.WaitRegistration,
+                firstName = "Иван",
+                lastName = "Иванов",
+            ),
+            {}, {}, {}, {}, {}, {},
+        )
+    }
+}
+
+@PreviewFontScale
+@Composable
+private fun AuthPhoneFontScalePreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(AuthUiState(authState = AuthState.WaitPhone), {}, {}, {}, {}, {}, {})
+    }
+}
+
+@PreviewFontScale
+@Composable
+private fun AuthCodeFontScalePreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(AuthUiState(authState = AuthState.WaitCode), {}, {}, {}, {}, {}, {})
+    }
+}
+
+@PreviewFontScale
+@Composable
+private fun AuthPasswordFontScalePreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(
+            AuthUiState(authState = AuthState.WaitPassword("Подробная подсказка для пароля")),
+            {}, {}, {}, {}, {}, {},
+        )
+    }
+}
+
+@PreviewFontScale
+@Composable
+private fun AuthRegistrationFontScalePreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(AuthUiState(authState = AuthState.WaitRegistration), {}, {}, {}, {}, {}, {})
+    }
+}
+
+@Preview(name = "Registration small screen", widthDp = 320, heightDp = 480)
+@Composable
+private fun AuthRegistrationSmallScreenPreview() {
+    OcsiGramTheme(
+        darkTheme = remember { mutableStateOf(false) },
+        dynamicColor = remember { mutableStateOf(false) },
+    ) {
+        AuthScreen(
+            AuthUiState(
+                authState = AuthState.WaitRegistration,
+                firstName = "Длинное имя пользователя",
+                lastName = "Длинная фамилия пользователя",
+            ),
+            {}, {}, {}, {}, {}, {},
+        )
     }
 }
